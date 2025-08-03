@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educa-Tech | Educación y Tecnología</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1d4ed8',
+                        accent: '#3b82f6',
+                        light: '#f0f9ff',
+                        dark: '#0f172a'
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Animaciones personalizadas */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotateY(0); }
+            to { transform: rotateY(180deg); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .flip-card {
+            perspective: 1000px;
+            height: 300px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flip-card-front {
+            background-color: white;
+            color: #333;
+        }
+        
+        .flip-card-back {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        /* Scroll suave */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Estilo para acordeones */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        /* Botón de WhatsApp profesional */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5);
+            z-index: 1000;
+            transition: all 0.3s;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.7);
+            animation: none;
+        }
+        
+        .whatsapp-button i {
+            font-size: 32px;
+        }
+        
+        .whatsapp-text {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #25D366;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .whatsapp-button:hover .whatsapp-text {
+            opacity: 1;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+    <!-- Botón flotante de WhatsApp profesional -->
+    <a href="https://wa.me/529842119971" target="_blank" class="whatsapp-button">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-text">¡Contáctanos!</span>
+    </a>
+
+    <!-- Barra de navegación -->
+    <nav class="fixed w-full bg-white shadow-md z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#hero" class="flex items-center">
+                        <i class="fas fa-graduation-cap text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-primary">Educa-Tech</span>
+                    </a>
+                </div>
+                
+                <!-- Menú para escritorio -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#introduccion" class="text-gray-600 hover:text-primary transition-colors">Introducción</a>
+                    <a href="#herramientas" class="text-gray-600 hover:text-primary transition-colors">Herramientas</a>
+                    <a href="#beneficios" class="text-gray-600 hover:text-primary transition-colors">Beneficios</a>
+                    <a href="#desafios" class="text-gray-600 hover:text-primary transition-colors">Desafíos</a>
+                    <a href="#futuro" class="text-gray-600 hover:text-primary transition-colors">Futuro</a>
+                    <a href="#contacto" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">Contacto</a>
+                </div>
+                
+                <!-- Menú hamburguesa para móviles -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-primary">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menú móvil desplegable -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#introduccion" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-100">Introducción</a>
+                <a href="#herramientas" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-100">Herramientas</a>
+                <a href="#beneficios" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-100">Beneficios</a>
+                <a href="#desafios" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-100">Desafíos</a>
+                <a href="#futuro" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-100">Futuro</a>
+                <a href="#contacto" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-primary hover:bg-secondary">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="pt-20 pb-16 md:pt-28 md:pb-24 bg-gradient-to-r from-primary to-accent text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center fade-in-section">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+                    Educación y Tecnología
+                </h1>
+                <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-10 animate-fade-in">
+                    Transformando la enseñanza y el aprendizaje en la era digital
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in">
+                    <a href="#introduccion" class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                        Explorar contenido
+                    </a>
+                    <a href="#contacto" class="border-2 border-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-primary transition-colors">
+                        Contactar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Introducción -->
+    <section id="introduccion" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-lightbulb text-primary mr-2"></i>
+                    Introducción
+                </h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    La convergencia entre educación y tecnología está revolucionando cómo aprendemos, enseñamos y accedemos al conocimiento.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 fade-in-section">
+                <div class="bg-light p-8 rounded-xl shadow-lg">
+                    <i class="fas fa-globe-americas text-primary text-4xl mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-4">La Revolución Digital</h3>
+                    <p class="text-gray-600 mb-4">
+                        Las tecnologías digitales han transformado radicalmente el panorama educativo, permitiendo nuevas formas de enseñanza y aprendizaje que trascienden las barreras físicas y temporales.
+                    </p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Acceso global a recursos educativos</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Aprendizaje personalizado y adaptativo</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>Colaboración sin fronteras</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-light p-8 rounded-xl shadow-lg">
+                    <i class="fas fa-chart-line text-primary text-4xl mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-4">Impacto en la Educación</h3>
+                    <p class="text-gray-600 mb-4">
+                        La integración tecnológica ha demostrado mejorar significativamente la participación estudiantil, la retención de conocimientos y el desarrollo de habilidades críticas para el siglo XXI.
+                    </p>
+                    <div class="mt-6">
+                        <div class="flex justify-between mb-2">
+                            <span>Participación estudiantil</span>
+                            <span>+78%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-primary h-2.5 rounded-full" style="width: 78%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-2 mt-4">
+                            <span>Retención de conocimientos</span>
+                            <span>+65%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-primary h-2.5 rounded-full" style="width: 65%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-2 mt-4">
+                            <span>Desarrollo de habilidades</span>
+                            <span>+83%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-primary h-2.5 rounded-full" style="width: 83%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Herramientas -->
+    <section id="herramientas" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-tools text-primary mr-2"></i>
+                    Herramientas Tecnológicas
+                </h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Plataformas y aplicaciones que están transformando la experiencia educativa en todo el mundo.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: Plataformas LMS -->
+                <div class="flip-card fade-in-section">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-primary text-4xl mb-4">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Plataformas LMS</h3>
+                            <p class="text-gray-600">
+                                Sistemas de gestión de aprendizaje
+                            </p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-semibold mb-3 text-white">Plataformas LMS</h3>
+                            <p class="mb-4 text-gray-100">
+                                Moodle, Canvas y Blackboard permiten organizar cursos completos en entornos virtuales.
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Gestión de contenido</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Evaluaciones</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Seguimiento</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Aulas Virtuales -->
+                <div class="flip-card fade-in-section">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-primary text-4xl mb-4">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Aulas Virtuales</h3>
+                            <p class="text-gray-600">
+                                Interacción sincrónica
+                            </p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-semibold mb-3 text-white">Aulas Virtuales</h3>
+                            <p class="mb-4 text-gray-100">
+                                Zoom, Google Meet y Microsoft Teams facilitan la interacción entre docentes y estudiantes.
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Videoconferencia</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Pizarra digital</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Colaboración</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Aplicaciones Educativas -->
+                <div class="flip-card fade-in-section">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-primary text-4xl mb-4">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Aplicaciones Educativas</h3>
+                            <p class="text-gray-600">
+                                Aprendizaje interactivo
+                            </p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-semibold mb-3 text-white">Aplicaciones Educativas</h3>
+                            <p class="mb-4 text-gray-100">
+                                Miles de apps especializadas ofrecen aprendizaje interactivo y gamificación.
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Gamificación</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Microlearning</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Accesibilidad</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 4: Inteligencia Artificial -->
+                <div class="flip-card fade-in-section">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-primary text-4xl mb-4">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Inteligencia Artificial</h3>
+                            <p class="text-gray-600">
+                                Personalización del aprendizaje
+                            </p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-semibold mb-3 text-white">Inteligencia Artificial</h3>
+                            <p class="mb-4 text-gray-100">
+                                Soluciones de IA personalizan el aprendizaje, automatizan evaluaciones y ofrecen tutoría adaptativa.
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Personalización</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Tutores virtuales</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Analítica predictiva</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 5: Realidad Virtual -->
+                <div class="flip-card fade-in-section">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-primary text-4xl mb-4">
+                                <i class="fas fa-vr-cardboard"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Realidad Virtual</h3>
+                            <p class="text-gray-600">
+                                Experiencias inmersivas
+                            </p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-semibold mb-3 text-white">Realidad Virtual</h3>
+                            <p class="mb-4 text-gray-100">
+                                Permite explorar entornos históricos, científicos y culturales sin salir del aula.
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Inmersión</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Simulaciones</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Experiencias</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 6: Recursos Docentes -->
+                <div class="flip-card fade-in-section">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-primary text-4xl mb-4">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Recursos Docentes</h3>
+                            <p class="text-gray-600">
+                                Planificación y evaluación
+                            </p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 class="text-xl font-semibold mb-3 text-white">Recursos Docentes</h3>
+                            <p class="mb-4 text-gray-100">
+                                Plataformas que apoyan a educadores con recursos didácticos y herramientas.
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Planificación</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Recursos</span>
+                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full">Evaluación</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Beneficios -->
+    <section id="beneficios" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-star text-primary mr-2"></i>
+                    Beneficios Clave
+                </h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    La tecnología aplicada a la educación ofrece ventajas transformadoras para estudiantes, docentes e instituciones.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-primary to-secondary text-white p-8 rounded-2xl shadow-xl fade-in-section">
+                    <h3 class="text-2xl font-bold mb-6">Para Estudiantes</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-xl mr-3 mt-1"></i>
+                            <span>Aprendizaje personalizado adaptado a ritmos y estilos individuales</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-xl mr-3 mt-1"></i>
+                            <span>Acceso ilimitado a recursos globales y actualizados</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-xl mr-3 mt-1"></i>
+                            <span>Desarrollo de competencias digitales esenciales</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-xl mr-3 mt-1"></i>
+                            <span>Mayor participación a través de metodologías interactivas</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-xl mr-3 mt-1"></i>
+                            <span>Flexibilidad de horarios y aprendizaje ubicuo</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-light p-6 rounded-xl shadow-lg fade-in-section">
+                        <i class="fas fa-user-tie text-primary text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-3">Para Docentes</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Herramientas para crear experiencias de aprendizaje innovadoras</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Automatización de tareas administrativas</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Acceso a redes de colaboración profesional</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Análisis de datos para mejorar estrategias pedagógicas</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-light p-6 rounded-xl shadow-lg fade-in-section">
+                        <i class="fas fa-university text-primary text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-3">Para Instituciones</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Ampliación de cobertura educativa</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Optimización de recursos y costos</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Mejora continua basada en datos</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-2 mr-2"></i>
+                                <span>Posicionamiento como institución innovadora</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl border-2 border-primary shadow-lg fade-in-section">
+                        <i class="fas fa-chart-pie text-primary text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-3">Impacto Global</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-primary">92%</div>
+                                <div class="text-gray-600 text-sm">Instituciones implementan soluciones tecnológicas</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-primary">67%</div>
+                                <div class="text-gray-600 text-sm">Docentes reportan mejoras significativas</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600">
+                            La tecnología educativa crece a un ritmo del 18% anual, transformando sistemas educativos en todo el mundo.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-primary text-white p-6 rounded-xl shadow-lg fade-in-section">
+                        <i class="fas fa-globe text-white text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-3">Acceso Universal</h3>
+                        <p class="mb-4">
+                            Reducción de barreras geográficas, económicas y físicas para la educación de calidad.
+                        </p>
+                        <div class="flex items-center">
+                            <div class="mr-4">
+                                <i class="fas fa-users text-3xl"></i>
+                            </div>
+                            <div>
+                                <div class="text-xl font-bold">+500 millones</div>
+                                <div class="text-sm">de estudiantes beneficiados globalmente</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Desafíos -->
+    <section id="desafios" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-exclamation-triangle text-primary mr-2"></i>
+                    Desafíos y Consideraciones
+                </h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    La integración tecnológica en educación presenta retos importantes que requieren atención estratégica.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg fade-in-section">
+                    <div class="text-primary text-4xl mb-4">
+                        <i class="fas fa-digital-tachograph"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Brecha Digital</h3>
+                    <p class="text-gray-600 mb-4">
+                        Desigualdad en el acceso a dispositivos, internet de calidad y competencias digitales.
+                    </p>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-700 mb-2">Estrategias:</h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Programas de dotación tecnológica</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Espacios públicos con acceso a internet</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Capacitación en competencias digitales</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg fade-in-section">
+                    <div class="text-primary text-4xl mb-4">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Seguridad y Privacidad</h3>
+                    <p class="text-gray-600 mb-4">
+                        Protección de datos personales y prevención de riesgos en entornos digitales.
+                    </p>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-700 mb-2">Estrategias:</h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Plataformas con cifrado de datos</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Políticas claras de privacidad</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Educación en ciudadanía digital</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg fade-in-section">
+                    <div class="text-primary text-4xl mb-4">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Formación Docente</h3>
+                    <p class="text-gray-600 mb-4">
+                        Necesidad de desarrollo profesional continuo para la integración pedagógica de la tecnología.
+                    </p>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-700 mb-2">Estrategias:</h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Programas de capacitación permanente</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Comunidades de práctica docente</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-circle text-primary text-xs mt-1 mr-2"></i>
+                                <span>Incentivos para la innovación educativa</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-light border-l-4 border-primary p-6 rounded-lg fade-in-section">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-balance-scale text-primary text-3xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Equilibrio Pedagógico</h3>
+                        <p class="mt-2 text-gray-600">
+                            La tecnología debe complementar, no reemplazar, los procesos pedagógicos fundamentales. El desafío principal es integrar herramientas digitales manteniendo la esencia del proceso educativo centrado en el desarrollo humano integral.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Futuro -->
+    <section id="futuro" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-rocket text-primary mr-2"></i>
+                    El Futuro de la Educación
+                </h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Tendencias emergentes y direcciones que moldearán la educación en las próximas décadas.
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto fade-in-section">
+                <!-- Acordeón -->
+                <div class="space-y-4">
+                    <!-- Acordeón 1: Aprendizaje Personalizado -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <button class="w-full text-left p-6 font-semibold text-lg bg-light hover:bg-gray-50 transition-colors flex justify-between items-center" onclick="toggleAccordion('accordion1')">
+                            <span><i class="fas fa-user-graduate text-primary mr-3"></i> Aprendizaje Personalizado</span>
+                            <i id="icon-accordion1" class="fas fa-chevron-down text-primary"></i>
+                        </button>
+                        <div id="accordion1" class="accordion-content">
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-600 mb-4">
+                                    Sistemas que se ajustan automáticamente al nivel y ritmo de cada estudiante, proporcionando rutas personalizadas de aprendizaje basadas en el desempeño y las necesidades individuales.
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <i class="fas fa-route text-blue-500 text-xl mb-2"></i>
+                                        <h4 class="font-semibold">Rutas Personalizadas</h4>
+                                        <p class="text-sm text-gray-600">Adaptadas a cada estudiante</p>
+                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <i class="fas fa-chart-line text-blue-500 text-xl mb-2"></i>
+                                        <h4 class="font-semibold">Progreso Individual</h4>
+                                        <p class="text-sm text-gray-600">Seguimiento detallado</p>
+                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <i class="fas fa-bullseye text-blue-500 text-xl mb-2"></i>
+                                        <h4 class="font-semibold">Metas Personalizadas</h4>
+                                        <p class="text-sm text-gray-600">Objetivos adaptados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Acordeón 2: Realidad Virtual y Aumentada -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <button class="w-full text-left p-6 font-semibold text-lg bg-light hover:bg-gray-50 transition-colors flex justify-between items-center" onclick="toggleAccordion('accordion2')">
+                            <span><i class="fas fa-vr-cardboard text-primary mr-3"></i> Realidad Virtual y Aumentada</span>
+                            <i id="icon-accordion2" class="fas fa-chevron-down text-primary"></i>
+                        </button>
+                        <div id="accordion2" class="accordion-content">
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-600 mb-4">
+                                    Experiencias inmersivas que transforman la forma en que los estudiantes interactúan con el contenido educativo, permitiendo explorar conceptos complejos en entornos simulados.
+                                </p>
+                                <div class="flex items-center text-gray-600 mb-3">
+                                    <i class="fas fa-graduation-cap text-blue-500 mr-2"></i>
+                                    <span>Simulaciones interactivas para aprendizaje práctico</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 mb-3">
+                                    <i class="fas fa-globe-americas text-blue-500 mr-2"></i>
+                                    <span>Exploración de lugares históricos y geográficos</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-atom text-blue-500 mr-2"></i>
+                                    <span>Visualización de conceptos científicos complejos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Acordeón 3: Inteligencia Artificial -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <button class="w-full text-left p-6 font-semibold text-lg bg-light hover:bg-gray-50 transition-colors flex justify-between items-center" onclick="toggleAccordion('accordion3')">
+                            <span><i class="fas fa-brain text-primary mr-3"></i> Inteligencia Artificial</span>
+                            <i id="icon-accordion3" class="fas fa-chevron-down text-primary"></i>
+                        </button>
+                        <div id="accordion3" class="accordion-content">
+                            <div class="px-6 pb-6">
+                                <p class="text-gray-600 mb-4">
+                                    Sistemas inteligentes que analizan el desempeño estudiantil, proporcionan retroalimentación inmediata y adaptan el contenido educativo en tiempo real para maximizar el aprendizaje.
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <div class="flex items-center mb-2">
+                                            <i class="fas fa-user-cog text-blue-500 mr-2"></i>
+                                            <h4 class="font-semibold">Tutores Virtuales</h4>
+                                        </div>
+                                        <p class="text-sm text-gray-600">Asistencia personalizada 24/7</p>
+                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <div class="flex items-center mb-2">
+                                            <i class="fas fa-chart-bar text-blue-500 mr-2"></i>
+                                            <h4 class="font-semibold">Analítica Predictiva</h4>
+                                        </div>
+                                        <p class="text-sm text-gray-600">Identificación de necesidades de aprendizaje</p>
+                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <div class="flex items-center mb-2">
+                                            <i class="fas fa-robot text-blue-500 mr-2"></i>
+                                            <h4 class="font-semibold">Automatización</h4>
+                                        </div>
+                                        <p class="text-sm text-gray-600">Evaluación y retroalimentación automática</p>
+                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <div class="flex items-center mb-2">
+                                            <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                                            <h4 class="font-semibold">Recomendaciones</h4>
+                                        </div>
+                                        <p class="text-sm text-gray-600">Contenido adaptado al progreso</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center fade-in-section">
+                <div class="inline-block bg-primary text-white px-6 py-3 rounded-lg">
+                    <i class="fas fa-quote-left text-xl mr-2"></i>
+                    <span class="text-lg font-medium">El futuro de la educación no es digital, es humano, potenciado por la tecnología</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Video -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-play-circle text-primary mr-2"></i>
+                    Video Educativo
+                </h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Descubre cómo la tecnología está transformando la educación en este video.
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto fade-in-section">
+                <div class="aspect-w-16 aspect-h-9 rounded-xl shadow-xl overflow-hidden">
+                    <iframe src="https://www.youtube.com/embed/kBh0q-MxMTQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="bg-dark text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="md:col-span-2">
+                    <a href="#" class="flex items-center mb-6">
+                        <i class="fas fa-graduation-cap text-white text-2xl mr-2"></i>
+                        <span class="text-xl font-bold">Educa-Tech</span>
+                    </a>
+                    <p class="text-gray-300 mb-6 max-w-md">
+                        Transformando la educación a través de la tecnología. Comprometidos con la innovación educativa para un futuro más inclusivo y equitativo.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com" target="_blank" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://youtu.be/kBh0q-MxMTQ" target="_blank" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Enlaces Rápidos</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#introduccion" class="text-gray-300 hover:text-white transition-colors">Introducción</a></li>
+                        <li><a href="#herramientas" class="text-gray-300 hover:text-white transition-colors">Herramientas</a></li>
+                        <li><a href="#beneficios" class="text-gray-300 hover:text-white transition-colors">Beneficios</a></li>
+                        <li><a href="#desafios" class="text-gray-300 hover:text-white transition-colors">Desafíos</a></li>
+                        <li><a href="#futuro" class="text-gray-300 hover:text-white transition-colors">Futuro</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Contacto</h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-3"></i>
+                            <span>ue0204@unienigma.edu.mx</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt mt-1 mr-3"></i>
+                            <span>+52 (984) 211-9971</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+                            <span>Playa del Carmen, Q. Roo.</span>
+                        </li>
+                        <li class="flex items-start mt-4">
+                            <i class="fas fa-user mt-1 mr-3"></i>
+                            <span>Autor: Héctor L. Pérez</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Educa-Tech. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Menú móvil
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Cerrar menú móvil al hacer clic en un enlace
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+        
+        // Animaciones al hacer scroll
+        const fadeInSections = document.querySelectorAll('.fade-in-section');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        fadeInSections.forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Función para acordeón
+        function toggleAccordion(id) {
+            const accordion = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (accordion.style.maxHeight) {
+                accordion.style.maxHeight = null;
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                accordion.style.maxHeight = accordion.scrollHeight + "px";
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+        
+        // Inicializar acordeones
+        document.querySelectorAll('.accordion-content').forEach(content => {
+            content.style.maxHeight = null;
+        });
+    </script>
+</body>
+</html>
